@@ -1,0 +1,12 @@
+Package: Columbia-basin-climate-change-yields
+Title: Decision-aid for crop producers in the Columbia Basin
+Version: 0.0.0.1
+Authors@R: person('Nicholas', 'Potter', email='potter.nicholas@gmail.com', role = c('aut', 'cre'))
+Description: 
+Depends: R (>= 3.1.2)
+License: 
+LazyData: true
+Suggests: testthat,
+    knitr,
+    covr
+VignetteBuilder: knitr
