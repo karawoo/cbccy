@@ -1,0 +1,23 @@
+## Climate Change and Crop Yield Tool
+
+The climate change and crop yield tool is an interactive map-based web tool that allows users to examine climate projections and their effects on crop yields for the Columbia Basin. The tool is intended as a decision aid:
+
+* helping producers to make planting decisions for the current year
+* facilitating learning about what would have happened if they had made different decisions in past years
+
+### Functionality
+The tool brings together multiple data sources and presents them in one location. An incomplete and unfinished list of functionality includes:
+
+* Effect of planting date on yields
+* Number of historical years in which the last freeze date was later than the selected date
+* Number of historical years in which the first freeze data was earlier than the selected date
+* Display of days in which the temperature was above a threshold temperature for that crop
+* Display of growth stages for crops based on GDD
+* Display of life stages for insects based on GDD
+* Inclusion of additional variables that are predictively useful for yields
+* Display of days in which precipitation is above and below the historical average
+* Forecast of precipitation based on historical/future forecasts as something analogous to GDD
+* Expected yields of different varieties of the selected crop, based on GDD needed for maturity (faster maturity is correlated with lower yield)
+* Selection of multiple varieties to see maturity dates for labor planning purposes (staggering harvests)
+* Ability to see, for a selected location, historical years that were similar to this year or to a selected future year, as well as other locations that are experiencing similar temperature/precipitation patterns to the current year
+
