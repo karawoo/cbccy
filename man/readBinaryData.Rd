@@ -5,7 +5,7 @@
 \title{Reads binary climate data.}
 \usage{
 readBinaryData(file.name, what = "integer", size = 2, n = 134412,
-  encoding = "ASCII")
+  encoding = "ASCII", ...)
 }
 \arguments{
 \item{what}{the data type to read as, default integer}

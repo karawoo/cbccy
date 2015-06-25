@@ -85,16 +85,16 @@ getClimateData <- function(lat,
                                               "temp.max", 
                                               "temp.min", 
                                               "windspeed"),
-                             column.factors = c(0.4, .01, .01, .01)
+                             column.factors = c(0.025, .01, .01, .01)
                              ) {
   #load the data
   file.name = paste0(data.dir,file.name.root,lat,"_",lng)
   climateVector <- readBinaryData(file.name)
-  
+    
   #parse to data frame
-  row.num = length(climateVector)/column.num
   column.num = length(column.names)
-  df = data.frame(matrix(climateVector, nrow=row.num, ncol=column.num))
+  row.num = length(climateVector)/column.num
+  df = data.frame(matrix(climateVector, nrow=row.num, ncol=column.num, byrow=TRUE))
   names(df) <- column.names
   
   #factors
@@ -118,10 +118,12 @@ readBinaryData <- function(file.name,
                            what="integer", 
                            size=2, 
                            n=134412, 
-                           encoding="ASCII") {
+                           encoding="ASCII", ...) {
   
   to.read = file(file.name, 'rb', encoding=encoding)
-  x = readBin(to.read,what=what, size=size, n=n, ...)
+  x = readBin(to.read, what=what, size=size, n=n, ...)
+  close(to.read)
+  x
 }
 
 #' Get data from historical file
@@ -132,15 +134,20 @@ readBinaryData <- function(file.name,
 #' @param lng the longitude of a location
 #' @param year.start the first year of data to include, default 1915
 #' @param year.end the last year of data to include, default 2006
+#' @param ... other parameters passed to getClimateData()
 #' @return a data frame of climate data from 1915-2006
 getHistoryData <- function(lat, lng, year.start=1915, year.end=2006, ...) {
+  
+  #load data 
   df = getClimateData(lat,lng, ...)
   
-  #since data files are not dated, get the whole file, then filter to years we want.
+  #vector of dates
   df$date = dateVector(1915, 2006)
-  filter(df, 
-         date <= as.Date(paste0(year.end, "-12-31")) && 
-           date >= as.Date(paste0(year.start, "-01-01")))
+  
+  #since data files are not dated, get the whole file, then filter to years we want.
+  dplyr::filter(df, 
+                date <= as.Date(paste0(year.end, "-12-31")), 
+                date >= as.Date(paste0(year.start, "-01-01")))
 }
 
 #' Fetch raw data

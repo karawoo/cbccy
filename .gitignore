@@ -14,4 +14,5 @@ vignettes/*.html
 vignettes/*.pdf
 # all data by default (I don't have rights to publish it)
 data/*
+testdata/*
 inst/doc

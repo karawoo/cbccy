@@ -35,11 +35,13 @@ calcGDD <- function(temp.hi,
 calcCumGDD <- function(dates, 
                        temp.hi, 
                        temp.low, 
-                       base, 
                        ...) {
   year = as.integer(format(dates, "%Y"))
-  gdd = calcGDD(temp.hi, temp.low, base, ...)
+  gdd = calcGDD(temp.hi, temp.low, ...)
   df = data.frame(dates, year, gdd)
-  df.by_year = group_by(df, year)
-  by.year = summarize(df.by_year, gdd.cum = cumsum(gdd))
+  df.by_year = dplyr::group_by(df, year)
+  by.year = dplyr::summarize(df.by_year, gdd.cum = cumsum(gdd))
 }
+
+
+
