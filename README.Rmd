@@ -5,6 +5,14 @@ The climate change and crop yield tool is an interactive map-based web tool that
 * helping producers to make planting decisions for the current year
 * facilitating learning about what would have happened if they had made different decisions in past years
 
+### Installation
+
+Install this package with:
+
+    install.packages("cbccy")
+    
+The `vignettes` directory contains different projects included in this package. You can see the vignettes by issueing `browsevignettes(<package name>)`. The `getting-started` vignette walks you through downloading and installing the necessary raw data and some of the available functionality. The `app` vignette contains the R shiny app. Other vignettes will involve additional analysis or tools.
+
 ### Functionality
 The tool brings together multiple data sources and presents them in one location. An incomplete and unfinished list of functionality includes:
 

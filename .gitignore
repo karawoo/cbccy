@@ -3,18 +3,15 @@
 .RData
 =======
 # History files
-.Rhistory
 .Rapp.history
 
 # Example code in package build process
 *-Ex.R
-
 # RStudio files
 .Rproj.user/
-
 # produced vignettes
 vignettes/*.html
 vignettes/*.pdf
-
 # all data by default (I don't have rights to publish it)
 data/*
+inst/doc
