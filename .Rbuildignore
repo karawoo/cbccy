@@ -1,6 +1,12 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.travis\.yml$
-data/
 .gitignore
+
+# don't include the data directory, but include these specfic data files 
+data/
+!data/locations/data_41.28125_-116.21875
+!data/locations/data_46.71875_-117.21875
+!data/locations/data_47.21875_-117.21875
+!data/locations/data_48.40625_-117.84375
 
