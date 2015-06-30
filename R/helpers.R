@@ -5,22 +5,30 @@
 #' 
 #' @export
 #' @param dir a directory location, default 'data/locations'.
+#' @param from.files boolean to get locations from files present or 
+#'   from previously compiled list.
 #' @param write boolean to write a list of all locations, default FALSE
-#' @param write.file string filename to write, default "data/locations.csv"
+#' @param list.file string filename to read/write, default "data/locations.csv"
 #' @return data frame of latitude/longitude pairs
-availableLocations <- function(dir="data/locations", 
+availableLocations <- function(dir="data/locations",
+                               from.files=FALSE,
                                write=FALSE,
-                               write.file = "data/locations.csv") {
-  files = list.files(dir)
-  m = matrix(nrow=length(files),ncol=2)
-  for (i in 1:length(files)) {
-    f = strsplit(files[i],"_")[[1]]
-    m[i,1] = f[2]
-    m[i,2] = f[3]
+                               list.file = "data/locations.csv") {
+  if (!from.files) {
+    locs=read.csv(list.file)  
   }
-  locs = data.frame(latitude=m[,1], longitude=m[,2])
+  else {
+    files = list.files(dir)
+    m = matrix(nrow=length(files),ncol=2)
+    for (i in 1:length(files)) {
+      f = strsplit(files[i],"_")[[1]]
+      m[i,1] = f[2]
+      m[i,2] = f[3]
+    }
+    locs = data.frame(latitude=m[,1], longitude=m[,2])
+  }
   
-  if (write) write.csv(locs, file=write.file)
+  if (write) write.csv(locs, file=list.file, row.names=FALSE)
   locs
 }
 
@@ -30,20 +38,30 @@ availableLocations <- function(dir="data/locations",
 #' 
 #' @export
 #' @param dir a directory location, default 'data/locations'.
+#' @param from.files boolean to get locations from files present or 
+#'   from previously compiled list.
 #' @param write boolean to write a list of all locations, default FALSE
-#' @param write.file string filename to write, default "data/crops.csv"
+#' @param list.file string filename to write, default "data/crops.csv"
 #' @return list of crop
-availableCrops <- function(dir="data/crops") {
-  files = list.files(dir)
-  m = matrix(nrow=length(files),ncol=2)
-  for (i in 1:length(files)) {
-    f = strsplit(files[i],"_")[[1]]
-    m[i,1] = f[2]
-    m[i,2] = f[3]
+availableCrops <- function(dir="data/crops",
+                           from.files=FALSE,
+                           write=FALSE,
+                           list.file = "data/crops.csv") {
+  if (!from.files) {
+    crops=read.csv(list.file)  
   }
-  crops = data.frame(latitude=m[,1], longitude=m[,2])
+  else {
+    files = list.files(dir)
+    m = matrix(nrow=length(files),ncol=2)
+    for (i in 1:length(files)) {
+      f = strsplit(files[i],"_")[[1]]
+      m[i,1] = f[2]
+      m[i,2] = f[3]
+    }
+    crops = data.frame(latitude=m[,1], longitude=m[,2])
+  }
   
-  if (write) write.csv(crops, file=write.file)
+  if (write) write.csv(locs, file=list.file, row.names=FALSE)
   crops
 }
 
