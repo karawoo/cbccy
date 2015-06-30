@@ -4,10 +4,14 @@
 \alias{makeGDDPlot}
 \title{make the central plot}
 \usage{
-makeGDDPlot(df)
+makeGDDPlot(dfbyday, dfyear, gdd.silk, gdd.flower)
 }
 \arguments{
-\item{df}{a data frame containing the necessary variables}
+\item{gdd.silk}{(numeric) the gdd level needed to silk (specific to a crop)}
+
+\item{gdd.flower}{(numeric) the gdd level needed to flower (specific to a crop)}
+
+\item{df}{a data frame containing gdd variables.}
 }
 \value{
 a plot object made with ggplot2

@@ -4,7 +4,7 @@
 \alias{calcCumGDD}
 \title{calculate cumulative GDD}
 \usage{
-calcCumGDD(dates, temp.hi, temp.low, base, ...)
+calcCumGDD(dates, temp.hi, temp.low, ...)
 }
 \arguments{
 \item{dates}{a vector of formatted dates}

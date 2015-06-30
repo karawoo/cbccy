@@ -1,31 +1,54 @@
 # data.R functions for working with climate data
 
-#' makePlot() creates a plot for the app
-#'
-#' generate an interactive plot using ggplot2.
-#' 
-#' @param df a data frame
-#' 
-createChartData <- function(df, this.year) {
-  #Forecast is from today forward
-  today = as.Date("2012-06-20")
-  df$forecast = 0
-  df[df$date>=today, 'forecast'] = 1
+  #calculated measures
+#  if (is.null(this.year)) this.year = as.integer(format(today, "%Y"))
   
-  df$gdd = calcGDD(df$temp.high, df$temp.low)
-  #df$gdd.forecast = df$gdd #past is unknown
-  #df[df$date>=today, 'gdd'] = NA #future is unknown
-  #df[df$date<today, 'gdd.forecast'] = NA #past is unknown
+  #Forecast is from forecast date forward
+#  if (is.null(forecast.date)) forecast.date = today
+#  df$forecast = 0
+#  df[df$date>=forecast.date, 'forecast'] = 1
+  
+#' Select and merge year data with day ranges.
+#' 
+#' Select years from year data and merge with day ranges.
+#' 
+#' @export
+#' @param yeardata a df of climate data for range of years.
+#' @param byday a df of climate data by day.
+#' @param select.years list of years to plot as comparison.
+#' @return a dataframe containing all data necessary to plot a GDD chart.
+selectAndMergeYearData <- function(yeardata, 
+                            byday, 
+                            select.years) {
+  
+  dplyr::arrange(merge(by.day, dplyr::filter(df, year==this.year), by="monthday"), date)
+  
+}
+
+
+#' Create daily range climate data.
+#'
+#' Create a data frame with max/min temp, precip, windspeed, gdd, etc....
+#' 
+#' @export
+#' @param df a data frame of climate data spanning multiple years.
+#' @return a data frame containing growing degree days.
+createDailyData <- function(df) {
+  
+  #monthday variable for grouping
+  df$monthday = format(df$date, "%m-%d")
  
   # day dimension
-  df.by_day = group_by(df, monthday)
-  by.day = summarize(df.by_day, 
+  df.by_day = dplyr::group_by(df, monthday)
+  by.day = dplyr::summarize(df.by_day, 
                      temp.max=max(temp.high),
-                     temp.avg=mean(temp.avg),
+                     temp.avg=mean((temp.high+temp.low)/2),
                      temp.min=min(temp.low),
-                     precip.max = max(precip),
-                     precip.min = min(precip),
+                     precip.max = max(precipitation),
+                     precip.avg = mean(precipitation),
+                     precip.min = min(precipitation),
                      windspeed.max = max(windspeed),
+                     windspeed.avg = mean(windspeed),
                      windspeed.min = min(windspeed),
                      #firstfrost.earliest,
                      #firstfrost.latest,
@@ -37,7 +60,7 @@ createChartData <- function(df, this.year) {
                      gdd.sd = sd(gdd))
   
   #merge to this year's data by day number
-  arrange(merge(by.day, filter(df, year==this.year), by="monthday"), date)
+  dplyr::ungroup(by.day)
 }
 
 
@@ -69,6 +92,7 @@ getData <- function(year.start, year.end) {
 #' 
 #' Loads climate data for a specific latitude/longitude pair.
 #' 
+#' @export
 #' @param lat a latitude
 #' @param lng a longitude
 #' @param data.dir a directory location, default "data/locations/"
@@ -77,13 +101,13 @@ getData <- function(year.start, year.end) {
 #'   c("precipitation", "temp.max", "temp.min", "windspeed")
 #' @param column.factors a vector of values to multiply by
 #' @return a data frame of climate data
-getClimateData <- function(lat, 
+loadClimateData <- function(lat, 
                              lng, 
                              data.dir="data/locations/", 
                              file.name.root = "data_",
                              column.names = c("precipitation", 
-                                              "temp.max", 
-                                              "temp.min", 
+                                              "temp.high", 
+                                              "temp.low", 
                                               "windspeed"),
                              column.factors = c(0.025, .01, .01, .01)
                              ) {
@@ -108,6 +132,7 @@ getClimateData <- function(lat,
 #'
 #' Reads binary climate data as a single vector.
 #'  
+#' @export
 #' @param fname the name of the file to be read
 #' @param what the data type to read as, default integer
 #' @param size the byte size, default 2
@@ -130,19 +155,23 @@ readBinaryData <- function(file.name,
 #' 
 #' Gets data from history, including specific years of history
 #' 
+#' @export
 #' @param lat the latitude of a location
 #' @param lng the longitude of a location
 #' @param year.start the first year of data to include, default 1915
 #' @param year.end the last year of data to include, default 2006
 #' @param ... other parameters passed to getClimateData()
 #' @return a data frame of climate data from 1915-2006
-getHistoryData <- function(lat, lng, year.start=1915, year.end=2006, ...) {
+getLocationData <- function(lat, lng, year.start=1915, year.end=2006, ...) {
   
   #load data 
-  df = getClimateData(lat,lng, ...)
+  df = loadClimateData(lat,lng, ...)
   
   #vector of dates
   df$date = dateVector(1915, 2006)
+  
+  #calculate GDD
+  df$gdd = calcGDD(df$temp.high, df$temp.low)
   
   #since data files are not dated, get the whole file, then filter to years we want.
   dplyr::filter(df, 
@@ -153,6 +182,8 @@ getHistoryData <- function(lat, lng, year.start=1915, year.end=2006, ...) {
 #' Fetch raw data
 #' 
 #' Get raw data from WSU servers and store it in data/
+#' 
+#' @export
 #' @param username login username
 #' @param password login password
 #' @param server server name, default aeolus.wsu.edu 

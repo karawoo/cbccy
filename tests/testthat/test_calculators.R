@@ -29,8 +29,8 @@ test_that("variables can be changed.", {
 
 #############
 #calcCumGDD()
-test_that("", {
-  expect_equal(calcCumGDD(testdf$date, testdf$temp.hi, testdf$temp.low))
+test_that("cumulative gdd is calculated correctly", {
+  expect_equal(calcCumGDD(testdf$date, testdf$temp.hi, testdf$temp.low), c(0.0, 2.5, 15.0, 37.5, 18.0, 43.0, 68.0))
 })
 
 

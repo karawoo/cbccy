@@ -2,6 +2,7 @@
 #' 
 #' Calculates Growing Degree Days from temperature data.
 #' 
+#' @export
 #' @param temp.hi a vector of daily high temperatures
 #' @param temp.low a vector of daily low temperatures
 #' @param base a vector of the crop-dependent base temperature
@@ -10,10 +11,10 @@
 #' @return a vector of (noncumulative) GDD
 calcGDD <- function(temp.hi, 
                     temp.low, 
-                    temp.base=50, 
+                    temp.base=5, 
                     restrict=25, 
-                    temp.max=86, 
-                    temp.min=50) {
+                    temp.max=30, 
+                    temp.min=10) {
  
   #no temps higher than max or lower than min 
   temp.hi[temp.hi>temp.max] = temp.max
@@ -27,6 +28,7 @@ calcGDD <- function(temp.hi,
 #' 
 #' calculates cumulative Growing Degree Days
 #' 
+#' @export
 #' @param dates a vector of formatted dates
 #' @param temp.hi a vector of daily high temperatures
 #' @param temp.low a vector of daily low temperatures
@@ -40,7 +42,7 @@ calcCumGDD <- function(dates,
   gdd = calcGDD(temp.hi, temp.low, ...)
   df = data.frame(dates, year, gdd)
   df.by_year = dplyr::group_by(df, year)
-  by.year = dplyr::summarize(df.by_year, gdd.cum = cumsum(gdd))
+  by.year = dplyr::mutate(df.by_year, gdd.cum = cumsum(gdd))$gdd.cum
 }
 
 

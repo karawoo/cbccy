@@ -2,11 +2,17 @@
 % Please edit documentation in R/plots.R
 \name{setTheme}
 \alias{setTheme}
-\title{theme for the plot}
+\title{Theme for cbccy plots.}
 \usage{
 setTheme(p)
 }
+\arguments{
+\item{p}{a ggplot2 object}
+}
+\value{
+a modified ggplot2 object
+}
 \description{
-Sets the design of the plot so that it only has to be called once.
+Sets the default theme for cbccy plots.
 }
 

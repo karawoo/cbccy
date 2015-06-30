@@ -1,9 +1,47 @@
 
+#' Get available locations.
+#' 
+#' Look at data files to determine available lat/lng combinations.
+#' 
+#' @export
+#' @param dir a directory location, default 'data/locations'.
+#' @return data frame of latitude/longitude pairs
+availableLocations <- function(dir="data/locations") {
+  files = list.files(dir)
+  m = matrix(nrow=length(files),ncol=2)
+  for (i in 1:length(files)) {
+    f = strsplit(files[i],"_")[[1]]
+    m[i,1] = f[2]
+    m[i,2] = f[3]
+  }
+  data.frame(latitude=m[,1], longitude=m[,2])
+}
+
+#' Get available crops.
+#' 
+#' Look at data files to determine what crop data are available.
+#' 
+#' @export
+#' @param dir a directory location, default 'data/locations'.
+#' @return list of crop
+availableCrops <- function(dir="data/crops") {
+  files = list.files(dir)
+  m = matrix(nrow=length(files),ncol=2)
+  for (i in 1:length(files)) {
+    f = strsplit(files[i],"_")[[1]]
+    m[i,1] = f[2]
+    m[i,2] = f[3]
+  }
+  data.frame(latitude=m[,1], longitude=m[,2])
+}
+
+
 
 #' Tests if year is a leap year.
 #' 
 #' Check to see that year is a leap year
 #' 
+#' @export
 #' @param year an integer
 #' @return boolean
 #' @examples 
@@ -17,6 +55,7 @@ is.leapYear <- function(yr) {
 #' 
 #' Creates a vector of dates from a start and end year, inclusive.
 #' 
+#' @export
 #' @param year.start the year to start with, default 1915
 #' @param year.end the last year, default 2006
 #' @return vector of date-formatted values
