@@ -20,7 +20,8 @@ availableLocations <- function(dir="data/locations",
   }
   locs = data.frame(latitude=m[,1], longitude=m[,2])
   
-  if (write) write.csv(locs, file=write.file) 
+  if (write) write.csv(locs, file=write.file)
+  locs
 }
 
 
