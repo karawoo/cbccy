@@ -24,16 +24,14 @@ availableLocations <- function(dir="data/locations",
   locs
 }
 
-
-
-
-
 #' Get available crops.
 #' 
 #' Look at data files to determine what crop data are available.
 #' 
 #' @export
 #' @param dir a directory location, default 'data/locations'.
+#' @param write boolean to write a list of all locations, default FALSE
+#' @param write.file string filename to write, default "data/crops.csv"
 #' @return list of crop
 availableCrops <- function(dir="data/crops") {
   files = list.files(dir)
@@ -43,7 +41,10 @@ availableCrops <- function(dir="data/crops") {
     m[i,1] = f[2]
     m[i,2] = f[3]
   }
-  data.frame(latitude=m[,1], longitude=m[,2])
+  crops = data.frame(latitude=m[,1], longitude=m[,2])
+  
+  if (write) write.csv(crops, file=write.file)
+  crops
 }
 
 
