@@ -5,8 +5,12 @@
 #' 
 #' @export
 #' @param dir a directory location, default 'data/locations'.
+#' @param write boolean to write a list of all locations, default FALSE
+#' @param write.file string filename to write, default "data/locations.csv"
 #' @return data frame of latitude/longitude pairs
-availableLocations <- function(dir="data/locations") {
+availableLocations <- function(dir="data/locations", 
+                               write=FALSE,
+                               write.file = "data/locations.csv") {
   files = list.files(dir)
   m = matrix(nrow=length(files),ncol=2)
   for (i in 1:length(files)) {
@@ -14,8 +18,14 @@ availableLocations <- function(dir="data/locations") {
     m[i,1] = f[2]
     m[i,2] = f[3]
   }
-  data.frame(latitude=m[,1], longitude=m[,2])
+  locs = data.frame(latitude=m[,1], longitude=m[,2])
+  
+  if (write) write.csv(locs, file=write.file) 
 }
+
+
+
+
 
 #' Get available crops.
 #' 
