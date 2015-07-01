@@ -151,18 +151,24 @@ readBinaryData <- function(file.name,
   x
 }
 
-#' Get data from historical file
+#' Get climate data for a location.
 #' 
-#' Gets data from history, including specific years of history
+#' Get climate data for a location. Wraps loadClimateData()
+#' in order to return a data frame with all necessary components
+#' for easy plotting.
 #' 
 #' @export
 #' @param lat the latitude of a location
 #' @param lng the longitude of a location
 #' @param year.start the first year of data to include, default 1915
 #' @param year.end the last year of data to include, default 2006
-#' @param ... other parameters passed to getClimateData()
+#' @param ... other parameters passed to loadClimateData()
 #' @return a data frame of climate data from 1915-2006
-getLocationData <- function(lat, lng, year.start=1915, year.end=2006, ...) {
+getLocationData <- function(lat, 
+                            lng, 
+                            year.start=1915, 
+                            year.end=2006, 
+                            ...) {
   
   #load data 
   df = loadClimateData(lat,lng, ...)
@@ -181,7 +187,7 @@ getLocationData <- function(lat, lng, year.start=1915, year.end=2006, ...) {
 
 #' Fetch raw data
 #' 
-#' Get raw data from WSU servers and store it in data/
+#' Get raw data from WSU servers and store it in data-raw/
 #' 
 #' @export
 #' @param username login username
@@ -191,25 +197,20 @@ getLocationData <- function(lat, lng, year.start=1915, year.end=2006, ...) {
 #' @param file.paths list of file paths
 #' @param file.names list of file names to download
 #' @return TRUE if successful
+#' @importFrom stringi stri_locate_last_words
 fetchRawData <- function(
     username=NULL, 
     password=NULL, 
     server="aeolus.wsu.edu", 
-    save.dir = "data/",
-    file.paths = c(
-      "/data/kirti/",
-      "/data/jennylabcommon/Future2035MetData/",
-      "/data/jennylabcommon/Future2035MetData/",
-      "/data/jennylabcommon/Future2035MetData/",
-      "/data/jennylabcommon/Future2035MetData/",
-      "/data/jennylabcommon/Future2035MetData/"
-      ),
-    file.names = c("vic_inputdata0625_pnw_combined_05142008.tar.gz",
-      "ccsm3_B1_2020-2049.tar.gz",
-      "cgcm3.1_t47_B1_2020-2049.tar.gz",
-      "hadcm_B1_2020-2049.tar.gz",
-      "ipsl_cm4_A1B_2020-2049.tar.gz",
-      "pcm1_A1B_2020-2049.tar.gz"
+    save.dir = "data-raw/",
+    file.names = c("/data/kirti/vic_inputdata0625_pnw_combined_05142008.tar.gz",
+      "/data/jennylabcommon/Future2035MetData/ccsm3_B1_2020-2049.tar.gz",
+      #"/data/jennylabcommon/Future2035MetData/cgcm3.1_t47_B1_2020-2049.tar.gz",
+      #"/data/jennylabcommon/Future2035MetData/hadcm_B1_2020-2049.tar.gz",
+      #"/data/jennylabcommon/Future2035MetData/ipsl_cm4_A1B_2020-2049.tar.gz",
+      #"/data/jennylabcommon/Future2035MetData/pcm1_A1B_2020-2049.tar.gz",
+      #"HistoricalCropGrids.txt",
+      "CropParamsForNick/crops.tar.gz"
       )
     ) {
   
@@ -223,18 +224,17 @@ fetchRawData <- function(
   if (is.null(password)) password = readline("Password: ")
  
   #fetch the data
-  for (i in 1:length(file.names)) {
+  for (infile in file.names) {
     #names
-    inname = paste0(file.paths[i],file.names[i])
-    outname = paste0(save.dir,file.names[i])
-    outfile = file(outname, 'wb')
+    name.index = stri_locate_last_words(infile)
+    file.name = substr(infile,name.index[1], name.index[2])
+    outfile = file(paste0(save.dir,file.name), 'wb')
     
     #connection
     x = scp(server, fn, user=paste0(username,":",password), binary=TRUE)
     
     #write to file
     writeBin(x, outfile)
-    
   }
 
   TRUE
