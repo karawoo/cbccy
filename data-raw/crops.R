@@ -1,20 +1,23 @@
 #Build example dataset for packaging
 
-library(dplyr)
-
-
 #working directory
 setwd("/home/potterzot/reason/work/wsu/climate-change/cbccy/")
 
 #list of crop files
-files = list.files("data-raw/crops/")
+#files = list.files("data-raw/crops/")
+files = untar("data-raw/crops.tar.gz", list=TRUE)
 
 df = NULL
 for (crop.file in files) {
   crop = list()
-  crop$rawname = strsplit(crop.file,".")[[1]]
+  crop.name.length = stringi::stri_locate_first_words(crop.file, ".CS_crop")[2]
+  crop$rawname = substr(crop.file,3,crop.name.length)
   
-  f = file(paste0("data-raw/crops/",crop.file), 'r')
+  #extract the file
+  untar("data-raw/crops.tar.gz", files=crop.file, exdir="data-raw/") 
+  
+  #get the data from the file
+  f = file(paste0("data-raw/",crop.file), 'r')
   for (line in readLines(f)) {
     if (substr(line,1,1)!="[") { #don't get the 'section' separators
       keyvalpair = strsplit(line,"=")
@@ -22,6 +25,9 @@ for (crop.file in files) {
     }
   }
   close(f)
+  
+  # remove the file
+  file.remove(paste0("data-raw/", crop.file))
   
   # copy to data frame of all crops
   if (is.null(df)) {
