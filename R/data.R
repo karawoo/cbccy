@@ -95,7 +95,7 @@ getData <- function(year.start, year.end) {
 #' @export
 #' @param lat a latitude
 #' @param lng a longitude
-#' @param data.dir a directory location, default "data/locations/"
+#' @param data.dir a directory location, default "data/historical/"
 #' @param file.name.root filename roots, default "data_"
 #' @param column.names data frame column names, default 
 #'   c("precipitation", "temp.max", "temp.min", "windspeed")
@@ -103,7 +103,7 @@ getData <- function(year.start, year.end) {
 #' @return a data frame of climate data
 loadClimateData <- function(lat, 
                              lng, 
-                             data.dir="data/locations/", 
+                             data.dir="data/historical/", 
                              file.name.root = "data_",
                              column.names = c("precipitation", 
                                               "temp.high", 
@@ -160,29 +160,43 @@ readBinaryData <- function(file.name,
 #' @export
 #' @param lat the latitude of a location
 #' @param lng the longitude of a location
-#' @param year.start the first year of data to include, default 1915
-#' @param year.end the last year of data to include, default 2006
+#' @param mode one of 'historical', 'future', or 'present'. 
+#'   Determines data to fetch.
 #' @param ... other parameters passed to loadClimateData()
 #' @return a data frame of climate data from 1915-2006
 getLocationData <- function(lat, 
                             lng, 
-                            year.start=1915, 
-                            year.end=2006, 
+                            mode,
+                            data.dir = "data/",
                             ...) {
+  if (mode=='historical') {
+    data.dir = paste0(data.dir,"historical/")
+    years = c(1915,2006)
+  }
+  else if (mode=='future') {
+    data.dir = paste0(data.dir,"future/")
+    years = c(2020,2111)
+    
+  }
+  else if (mode=='present') {
+    data.dir = paste0(data.dir,"present/")
+    years = c(2015,2015)
+  }
+  else {
+    stop("Mode must be one of 'historical', 'future', or 'present'.")
+  }
   
   #load data 
-  df = loadClimateData(lat,lng, ...)
+  df = loadClimateData(lat,lng, data.dir, ...)
   
   #vector of dates
-  df$date = dateVector(1915, 2006)
+  df$date = dateVector(years[1], years[2])
   
   #calculate GDD
   df$gdd = calcGDD(df$temp.high, df$temp.low)
   
-  #since data files are not dated, get the whole file, then filter to years we want.
-  dplyr::filter(df, 
-                date <= as.Date(paste0(year.end, "-12-31")), 
-                date >= as.Date(paste0(year.start, "-01-01")))
+  #return the data frame
+  df
 }
 
 #' Get crops available for a given location.
