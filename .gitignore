@@ -18,7 +18,7 @@ data-raw/*.tar.gz
 data-raw/*.txt
 data-raw/historical/
 data-raw/future/
-data-raw/crop/
+data-raw/crops/
 
 #install files
 inst/*
