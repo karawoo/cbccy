@@ -162,8 +162,10 @@ readBinaryData <- function(file.name,
 #' @param lng the longitude of a location
 #' @param mode one of 'historical', 'future', or 'present'. 
 #'   Determines data to fetch.
+#' @param data.dir the directory containing 'historical', 'future', 
+#'   and 'present' directories.
 #' @param ... other parameters passed to loadClimateData()
-#' @return a data frame of climate data from 1915-2006
+#' @return a data frame of climate data with dates attached.
 getLocationData <- function(lat, 
                             lng, 
                             mode,
@@ -189,9 +191,10 @@ getLocationData <- function(lat,
   #load data 
   df = loadClimateData(lat,lng, data.dir, ...)
   
-  #vector of dates
+  #vector of dates and years
   df$date = dateVector(years[1], years[2])
-  
+  df$year = as.integer(format(df$date, "%Y"))
+    
   #calculate GDD
   df$gdd = calcGDD(df$temp.high, df$temp.low)
   
