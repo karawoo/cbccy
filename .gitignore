@@ -13,8 +13,12 @@
 vignettes/*.html
 vignettes/*.pdf
 # all data by default (I don't have rights to publish it)
-data/*
-data-raw/*
+data/
+data-raw/*.tar.gz
+data-raw/*.txt
+data-raw/historical/
+data-raw/future/
+data-raw/crop/
 
 #install files
 inst/*
