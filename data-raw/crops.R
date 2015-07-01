@@ -1,10 +1,15 @@
-#Build example dataset for packaging
+#Build crops for packaging
 
 #working directory
 setwd("/home/potterzot/reason/work/wsu/climate-change/cbccy/")
 
+#crop ids
+cropids = read.csv("data-raw/cropids.txt", sep="\t", col.names=c("id", "rawname"))
+
+#crop names
+cropnames = read.csv("data-raw/cropnames.txt", sep="\t", col.names=(c("name", "rawname")))
+
 #list of crop files
-#files = list.files("data-raw/crops/")
 files = untar("data-raw/crops.tar.gz", list=TRUE)
 
 df = NULL
@@ -37,4 +42,6 @@ for (crop.file in files) {
     df = bind_rows(df,as.data.frame(crop, stringsAsFactors=FALSE))
   }
 }
-save(df, file="data/crops.rda")
+df = merge(df, cropids)
+crops = merge(df, cropnames)
+save(crops, file="data/crops.rda")

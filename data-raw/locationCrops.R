@@ -25,5 +25,5 @@ for (line.str in readLines(file(file.name, 'r'))) {
     else df = bind_rows(df, as.data.frame(loc.crop, stringsAsFactors=FALSE))
   }
 }
-
-save(df, file="data/locationCrops.rda")
+locationCrops = df
+save(locationCrops, file="data/locationCrops.rda")

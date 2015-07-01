@@ -185,6 +185,25 @@ getLocationData <- function(lat,
                 date >= as.Date(paste0(year.start, "-01-01")))
 }
 
+#' Get crops available for a given location.
+#' 
+#' Given a lat/lng pair, lookup which crop ids are produced
+#' in that area. Return the cropids.
+#' 
+#' @param lat the latitude.
+#' @param lng the longitude.
+#' @param data.dir the directory of the crop lookup data.
+#' @return a list of cropids.
+#' @importFrom dplyr filter
+#' @export
+getLocationCrops <- function(lat, lng, data.dir="data/") {
+  load(paste0(data.dir,"locationCrops.rda"))
+  filter(locationCrops, latitude==lat & longitude==lng)$cropid
+}
+
+
+
+
 #' Fetch raw data
 #' 
 #' Get raw data from WSU servers and store it in data-raw/
