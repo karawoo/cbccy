@@ -202,7 +202,7 @@ fetchRawData <- function(
     username=NULL, 
     password=NULL, 
     server="aeolus.wsu.edu", 
-    save.dir = "data-raw/",
+    save.dir = "data/",
     file.names = c("/data/kirti/vic_inputdata0625_pnw_combined_05142008.tar.gz",
       "/data/jennylabcommon/Future2035MetData/ccsm3_B1_2020-2049.tar.gz",
       #"/data/jennylabcommon/Future2035MetData/cgcm3.1_t47_B1_2020-2049.tar.gz",
