@@ -10,7 +10,7 @@
 #' @param write boolean to write a list of all locations, default FALSE
 #' @param list.file string filename to read/write, default "data/locations.csv"
 #' @return data frame of latitude/longitude pairs
-availableLocations <- function(dir="data/locations",
+availableLocations <- function(dir="data/historical",
                                from.files=FALSE,
                                write=FALSE,
                                list.file = "data/locations.csv") {
