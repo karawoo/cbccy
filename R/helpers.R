@@ -32,6 +32,24 @@ availableLocations <- function(dir="data/historical",
   locs
 }
 
+#' Get crop names available for a given location.
+#' 
+#' Given a lat/lng pair, gets a list of cropids and then
+#' fetches crop names based on those ids.
+#' 
+#' @param lat the latitude.
+#' @param lng the longitude.
+#' @return vector of crop names.
+#' @export
+availableCrops <- function(lat,lng, loc.data=locationCrops, crop.data=crops) {
+  cropids = filter(loc.data, 
+                         latitude==lat & 
+                           longitude==lng)$cropid
+  filter(crops, id %in% cropids)$name
+}
+
+
+
 #' Tests if year is a leap year.
 #' 
 #' Check to see that year is a leap year
