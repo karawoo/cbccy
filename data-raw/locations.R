@@ -25,11 +25,23 @@ for (i in 1:length(locations)) {
 }
 
 #Extract historical data
-untar("data-raw/vic_inputdata0625_pnw_combined_05142008.tar.gz", 
-      historical.files, 
-      exdir = "data/historical/")
+#untar("data-raw/vic_inputdata0625_pnw_combined_05142008.tar.gz", 
+#      historical.files, 
+#      exdir = "data/historical/")
 
 #Extract future data
-untar("data-raw/ccsm3_B1_2020-2049.tar.gz", 
-      future.files, 
-      exdir = "data/future/")
+#untar("data-raw/ccsm3_B1_2020-2049.tar.gz", 
+#      future.files, 
+#      exdir = "data/future/")
+
+#copy over 1 year of data as 'present' data
+#later we will use actual present data
+for (loc in locations) {
+  hist.data = getLocationData(loc[1],loc[2],mode='historical')
+  y.data = filter(hist.data,year==2001)
+  write.name = paste0("data/present/data_",loc[1], "_", loc[2])
+  writeClimateData(y.data, write.name)
+}
+
+
+

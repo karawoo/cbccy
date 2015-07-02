@@ -3,11 +3,17 @@
 #working directory
 setwd("/home/potterzot/reason/work/wsu/climate-change/cbccy/")
 
+#variables to be integers
+vars.integers = c("senescence", "flowering", "filling", "maturity", "base_temp", 
+                  "cutoff_temp", "maximum_temp", "inducement_temp")
+
+
+
 #crop ids
-cropids = read.csv("data-raw/cropids.txt", sep="\t", col.names=c("id", "rawname"))
+cropids = read.csv("data-raw/cropids.txt", sep="\t", col.names=c("id", "rawname"), stringsAsFactors=FALSE)
 
 #crop names
-cropnames = read.csv("data-raw/cropnames.txt", sep="\t", col.names=(c("name", "rawname")))
+cropnames = read.csv("data-raw/cropnames.txt", sep="\t", col.names=(c("name", "rawname")), stringsAsFactors=FALSE)
 
 #list of crop files
 files = untar("data-raw/crops.tar.gz", list=TRUE)
@@ -25,8 +31,14 @@ for (crop.file in files) {
   f = file(paste0("data-raw/",crop.file), 'r')
   for (line in readLines(f)) {
     if (substr(line,1,1)!="[") { #don't get the 'section' separators
-      keyvalpair = strsplit(line,"=")
-      crop[keyvalpair[[1]][1]] = keyvalpair[[1]][2]
+      keyvalpair = strsplit(line,"=")[[1]]
+      #fix type
+      if (keyvalpair[1] %in% vars.integers) {
+        if (is.na(keyvalpair[2])) {
+          if (keyvalpair[1]=="inducement_temp") keyvalpair[2]=5
+        keyvalpair[2] = as.integer(keyvalpair[2])
+      }
+      crop[keyvalpair[1]] = as.numeric(keyvalpair[2])
     }
   }
   close(f)
