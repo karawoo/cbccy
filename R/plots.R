@@ -46,82 +46,90 @@ createPlotFromLocation <- function(lat,
   pgdd
 }
 
-#' Add a year to a plot.
-#' 
-#' Add a year of data to a GDD plot.
-#' 
-#' 
-addYearToPlot <- function(df) {
-  
-}
-
-
-
-
-
-
 #' make the central plot
 #' 
 #' Plots the climate data as well as yield estimates and growth stage points.
 #' 
-#' @export
-#' @import ggplot2 scales
 #' @param df a data frame containing gdd variables.
 #' @param gdd.silk (numeric) the gdd level needed to silk (specific to a crop)
 #' @param gdd.flower (numeric) the gdd level needed to flower (specific to a crop)
 #' 
 #' @return a plot object made with ggplot2
-makeGDDPlot <- function(dfbyday,
-                        dfyear, 
-                        gdd.silk,
-                        gdd.flower) {
+#' @export
+#' @import ggplot2
+#' @importFrom scales date_format
+#' 
+createPlotFromClimateData <- function(df.historical,
+                        df.present,
+                        df.future = NULL,
+                        crop,
+                        today=format(Sys.Date(), "%Y-%m-%d")) {
   
-  #assign a date to dfbyday based on monthday
-  year = as.integer(format(dfyear$date[1], "%Y"))[1]
-  dfbyday$date = as.Date(paste0(year,"-",dfbyday$monthday))
+  #Calculated gdd for each date based on crop information
+  df.historical$gdd = calcGDD(df.historical$temp.hi, 
+                              df.historical$temp.low)
+  #, 
+  #                            crop$base_temp, 
+  #                            25, 
+  #                            crop$max_temp, temp.min)
+  df.present$gdd = calcGDD(df.present$temp.hi, 
+                           df.present$temp.low)
+                           #, 
+                           #crop$base_temp, 
+                           #25, 
+                           #crop$max_temp, temp.min)
+  
+  #assign a date to historical maxes and mins based on monthday
+  df.historical = createDailyData(df.historical)
+  year = df.present$year[1]
+  df.historical$date = as.Date(paste0(year,"-",df.historical$monthday))
+ 
+  #present data includes a forecast if after forecast date, which is today... 
+  df.present$forecast = with(df.present, as.integer((date>=today)))
+  df.present$monthday = as.factor(format(df.present$date, "%b-%d"))
   
   #find date of significant milestones
-  date.silk = dfyear[cumsum(dfyear$gdd)>gdd.silk, 'date'][1]
-  date.flower = dfyear[cumsum(dfyear$gdd)>gdd.flower, 'date'][1]
+  #date.senescence = df.present[cumsum(df.present$gdd)>crop$senescence, 'date'][1]
+  #date.flowering = df.present[cumsum(df.present$gdd)>crop$flowering, 'date'][1]
   
   #Plot
-  p <- ggplot(data=dfbyday, aes(x=date)) + 
+  p <- ggplot(data=df.historical, aes(x=date)) + 
     # GDD range
     geom_ribbon(aes(ymin=cumsum(gdd.min), ymax=cumsum(gdd.max)), color='#99ccff', alpha=0.1) +
     geom_line(aes(y=cumsum(gdd.avg)), color="gray", size=1.1) +
     
     # This year's gdd
-    geom_line(data=dfyear, aes(y=cumsum(gdd), x=date, linetype=factor(forecast)), size=1) + 
+    geom_line(data=df.present, aes(y=cumsum(gdd), x=date, linetype=factor(forecast)), size=1) + 
     
     # Silking
-    geom_segment(x=as.integer(dfyear$date[1]), 
-                 xend=as.integer(date.silk), 
-                 y=gdd.silk, 
-                 yend=gdd.silk, 
-                 color='red', 
-                 size=0.5) +
-    geom_segment(x=as.integer(date.silk), 
-                 xend=as.integer(date.silk), 
-                 y=0, 
-                 yend=gdd.silk, 
-                 color='red', 
-                 size=0.5) +
-    # Flowering
-    geom_segment(x=as.integer(dfyear$date[1]), 
-                 xend=as.integer(date.flower), 
-                 y=gdd.flower, 
-                 yend=gdd.flower, 
-                 color='blue', 
-                 size=0.5,
-                 alpha=0.1) +
-    geom_segment(x=as.integer(date.flower), 
-                 xend=as.integer(date.flower), 
-                 y=0, 
-                 yend=gdd.flower, 
-                 color='blue', 
-                 size=0.5,
-                 alpha=0.9) +
-    
+#     geom_segment(x=as.integer(df.present$date[1]), 
+#                  xend=as.integer(date.senescence), 
+#                  y=crop$senescence, 
+#                  yend=crop$senescence, 
+#                  color='red', 
+#                  size=0.5) +
+#     geom_segment(x=as.integer(date.senescence), 
+#                  xend=as.integer(date.senescence), 
+#                  y=0, 
+#                  yend=crop$senescence, 
+#                  color='red', 
+#                  size=0.5) +
+#     # Flowering
+#     geom_segment(x=as.integer(df.present$date[1]), 
+#                  xend=as.integer(date.flowering), 
+#                  y=crop$flowering, 
+#                  yend=crop$flowering, 
+#                  color='blue', 
+#                  size=0.5,
+#                  alpha=0.1) +
+#     geom_segment(x=as.integer(date.flowering), 
+#                  xend=as.integer(date.flowering), 
+#                  y=0, 
+#                  yend=crop$flowering, 
+#                  color='blue', 
+#                  size=0.5,
+#                  alpha=0.9) +
+#     
     # harvest day
     # first freeze day (histogram)
     # last freeze day (histogram)

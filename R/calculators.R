@@ -14,7 +14,7 @@ calcGDD <- function(temp.hi,
                     temp.base=5, 
                     restrict=25, 
                     temp.max=30, 
-                    temp.min=10) {
+                    temp.min=5) {
  
   #no temps higher than max or lower than min 
   temp.hi[temp.hi>temp.max] = temp.max

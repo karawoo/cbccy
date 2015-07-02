@@ -101,7 +101,7 @@ getData <- function(year.start, year.end) {
 #'   c("precipitation", "temp.max", "temp.min", "windspeed")
 #' @param column.factors a vector of values to multiply by
 #' @return a data frame of climate data
-loadClimateData <- function(lat, 
+readClimateData <- function(lat, 
                              lng, 
                              data.dir="data/historical/", 
                              file.name.root = "data_",
@@ -128,6 +128,32 @@ loadClimateData <- function(lat,
   df
 }
 
+#' Write climate data to a binary file for each location.
+#' 
+#' Writes a climate data frame to a file in binary format.
+#' 
+#' @param df the data frame to write.
+#' @param file.name the file name to write to.
+#' @param column.names the names of columns to write.
+#' @param column.factors the factors to divide by before writing.
+#' @return TRUE if successful.
+#' @export
+writeClimateData <- function(df,
+                             file.name,
+                             column.names = c("precipitation", 
+                                              "temp.high", 
+                                              "temp.low", 
+                                              "windspeed"),
+                             column.factors = c(0.025, .01, .01, .01),
+                             ...
+                             ) {
+  for (i in 1:length(column.factors)) {
+    df[column.names[i]] = df[column.names[i]] / column.factors[i]
+  }
+  
+  writeBinaryData(df[,column.names], file.name, ...)
+} 
+
 #' Reads binary climate data.
 #'
 #' Reads binary climate data as a single vector.
@@ -151,6 +177,28 @@ readBinaryData <- function(file.name,
   x
 }
 
+#' Write a data frame to a binary file.
+#' 
+#' Writes a data frame to binary, with no headers or row names.
+#' The written file is intended to mimic the binary data produced
+#' by the REACH project.
+#' 
+#' @param df data frame to be written.
+#' @param file.name the file to write to.
+#' @param encoding default is ASCII.
+#' @return TRUE is successful.
+#' @export
+writeBinaryData <- function(df, 
+                            file.name,
+                            size=2,
+                            encoding="ASCII") {
+  to.write = file(file.name, 'wb', encoding="ASCII")
+  writeBin(as.integer(as.vector(as.matrix(df))), to.write, size=size)
+  close(to.write)
+  unlink(to.write)
+}
+
+
 #' Get climate data for a location.
 #' 
 #' Get climate data for a location. Wraps loadClimateData()
@@ -162,6 +210,7 @@ readBinaryData <- function(file.name,
 #' @param lng the longitude of a location
 #' @param mode one of 'historical', 'future', or 'present'. 
 #'   Determines data to fetch.
+#' @param crop a crop object containing gdd information
 #' @param data.dir the directory containing 'historical', 'future', 
 #'   and 'present' directories.
 #' @param ... other parameters passed to loadClimateData()
@@ -189,14 +238,14 @@ getLocationData <- function(lat,
   }
   
   #load data 
-  df = loadClimateData(lat,lng, data.dir, ...)
+  df = readClimateData(lat,lng, data.dir, ...)
   
   #vector of dates and years
   df$date = dateVector(years[1], years[2])
   df$year = as.integer(format(df$date, "%Y"))
     
   #calculate GDD
-  df$gdd = calcGDD(df$temp.high, df$temp.low)
+  #df$gdd = calcGDD(df$temp.high, df$temp.low)
   
   #return the data frame
   df
