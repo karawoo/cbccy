@@ -4,10 +4,18 @@
 \alias{availableLocations}
 \title{Get available locations.}
 \usage{
-availableLocations(dir = "data/locations")
+availableLocations(dir = "data/historical", from.files = FALSE,
+  write = FALSE, list.file = "data/locations.csv")
 }
 \arguments{
 \item{dir}{a directory location, default 'data/locations'.}
+
+\item{from.files}{boolean to get locations from files present or
+from previously compiled list.}
+
+\item{write}{boolean to write a list of all locations, default FALSE}
+
+\item{list.file}{string filename to read/write, default "data/locations.csv"}
 }
 \value{
 data frame of latitude/longitude pairs

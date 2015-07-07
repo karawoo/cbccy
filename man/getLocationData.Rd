@@ -2,25 +2,31 @@
 % Please edit documentation in R/data.R
 \name{getLocationData}
 \alias{getLocationData}
-\title{Get data from historical file}
+\title{Get climate data for a location.}
 \usage{
-getLocationData(lat, lng, year.start = 1915, year.end = 2006, ...)
+getLocationData(lat, lng, mode, data.dir = "data/", ...)
 }
 \arguments{
 \item{lat}{the latitude of a location}
 
 \item{lng}{the longitude of a location}
 
-\item{year.start}{the first year of data to include, default 1915}
+\item{mode}{one of 'historical', 'future', or 'present'.
+Determines data to fetch.}
 
-\item{year.end}{the last year of data to include, default 2006}
+\item{data.dir}{the directory containing 'historical', 'future',
+and 'present' directories.}
 
-\item{...}{other parameters passed to getClimateData()}
+\item{...}{other parameters passed to loadClimateData()}
+
+\item{crop}{a crop object containing gdd information}
 }
 \value{
-a data frame of climate data from 1915-2006
+a data frame of climate data with dates attached.
 }
 \description{
-Gets data from history, including specific years of history
+Get climate data for a location. Wraps loadClimateData()
+in order to return a data frame with all necessary components
+for easy plotting.
 }
 

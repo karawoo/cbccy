@@ -5,16 +5,10 @@
 \title{Fetch raw data}
 \usage{
 fetchRawData(username = NULL, password = NULL, server = "aeolus.wsu.edu",
-  save.dir = "data/", file.paths = c("/data/kirti/",
-  "/data/jennylabcommon/Future2035MetData/",
-  "/data/jennylabcommon/Future2035MetData/",
-  "/data/jennylabcommon/Future2035MetData/",
-  "/data/jennylabcommon/Future2035MetData/",
-  "/data/jennylabcommon/Future2035MetData/"),
-  file.names = c("vic_inputdata0625_pnw_combined_05142008.tar.gz",
-  "ccsm3_B1_2020-2049.tar.gz", "cgcm3.1_t47_B1_2020-2049.tar.gz",
-  "hadcm_B1_2020-2049.tar.gz", "ipsl_cm4_A1B_2020-2049.tar.gz",
-  "pcm1_A1B_2020-2049.tar.gz"))
+  save.dir = "data/",
+  file.names = c("/data/kirti/vic_inputdata0625_pnw_combined_05142008.tar.gz",
+  "/data/jennylabcommon/Future2035MetData/ccsm3_B1_2020-2049.tar.gz",
+  "CropParamsForNick/crops.tar.gz"))
 }
 \arguments{
 \item{username}{login username}
@@ -25,14 +19,14 @@ fetchRawData(username = NULL, password = NULL, server = "aeolus.wsu.edu",
 
 \item{save.dir}{directory to save data to}
 
-\item{file.paths}{list of file paths}
-
 \item{file.names}{list of file names to download}
+
+\item{file.paths}{list of file paths}
 }
 \value{
 TRUE if successful
 }
 \description{
-Get raw data from WSU servers and store it in data/
+Get raw data from WSU servers and store it in data-raw/
 }
 

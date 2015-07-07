@@ -2,17 +2,20 @@
 % Please edit documentation in R/helpers.R
 \name{availableCrops}
 \alias{availableCrops}
-\title{Get available crops.}
+\title{Get crop names available for a given location.}
 \usage{
-availableCrops(dir = "data/locations")
+availableCrops(lat, lng, loc.data = locationCrops, crop.data = crops)
 }
 \arguments{
-\item{dir}{a directory location, default 'data/locations'.}
+\item{lat}{the latitude.}
+
+\item{lng}{the longitude.}
 }
 \value{
-list of crop
+vector of crop names.
 }
 \description{
-Look at data files to determine what crop data are available.
+Given a lat/lng pair, gets a list of cropids and then
+fetches crop names based on those ids.
 }
 

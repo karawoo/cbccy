@@ -5,7 +5,7 @@
 \title{Calculate growing degree days.}
 \usage{
 calcGDD(temp.hi, temp.low, temp.base = 5, restrict = 25, temp.max = 30,
-  temp.min = 10)
+  temp.min = 5)
 }
 \arguments{
 \item{temp.hi}{a vector of daily high temperatures}
