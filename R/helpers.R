@@ -87,7 +87,20 @@ dateVector <- function(year.start=1915, year.end=2006) {
   as.Date(day0 + 0:num.days)
 }
 
-
+#' Run R shiny app.
+#' 
+#' Launch the data visualization decision tool
+#' web app.
+#' 
+#' @export
+runApp <- function() {
+  appDir <- system.file("app", package = "cbccy")
+  if (appDir == "") {
+    stop("Could not find app directory. Try re-installing `cbccy`.", call. = FALSE)
+  }
+  
+  shiny::runApp(appDir, display.mode = "normal")
+}
 
 
 

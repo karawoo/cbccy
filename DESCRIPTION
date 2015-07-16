@@ -12,5 +12,6 @@ Imports: reshape2,
   dplyr
 Suggests: testthat,
   knitr,
-  covr
+  covr,
+  shiny
 VignetteBuilder: knitr

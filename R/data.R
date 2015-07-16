@@ -86,7 +86,14 @@ createDailyData <- function(df) {
                      gdd.avg = mean(gdd),
                      gdd.max = max(gdd),
                      gdd.min = min(gdd),
-                     gdd.sd = sd(gdd))
+                     gdd.sd = sd(gdd),
+                     gdd.median = median(gdd),
+                     gdd.max = max(gdd),
+                     gdd.min = min(gdd),
+                     gdd.90pct = quantile(gdd, probs=c(.9)),
+                     gdd.75pct = quantile(gdd, probs=c(.75)),
+                     gdd.25pct = quantile(gdd, probs=c(.25)),
+                     gdd.10pct = quantile(gdd, probs=c(.1))) 
   
   #merge to this year's data by day number
   ungroup(by.day)
