@@ -1,5 +1,32 @@
 # data.R functions for working with climate data
 
+
+#' Average temperatures over multiple years.
+#' 
+#' Convert temperature data for multiple years into a single average,
+#' with accompanying measures like standard deviation, percentages, etc...
+#' 
+#' @param df a data frame of climate data for multiple years.
+#' @return a dataframe consisting of a single year's worth of average data.
+#' @importFrom dplyr group_by summarize ungroup
+#' @export
+averageTemperatures <- function(df) {
+  df.by_day = group_by(df, monthday)
+  by_day = summarize(df.by_day, 
+            gdd.mean = mean(gdd),
+            gdd.sd = sd(gdd),
+            gdd.median = median(gdd),
+            gdd.max = max(gdd),
+            gdd.min = min(gdd),
+            gdd.90pct = quantile(gdd, probs=c(.9)),
+            gdd.75pct = quantile(gdd, probs=c(.75)),
+            gdd.25pct = quantile(gdd, probs=c(.25)),
+            gdd.10pct = quantile(gdd, probs=c(.1))) 
+  ungroup(by_day) 
+ }
+
+
+
   #calculated measures
 #  if (is.null(this.year)) this.year = as.integer(format(today, "%Y"))
   
@@ -12,16 +39,17 @@
 #' 
 #' Select years from year data and merge with day ranges.
 #' 
-#' @export
 #' @param yeardata a df of climate data for range of years.
 #' @param byday a df of climate data by day.
 #' @param select.years list of years to plot as comparison.
 #' @return a dataframe containing all data necessary to plot a GDD chart.
+#' @importFrom dplyr filter arrange
+#' @export
 selectAndMergeYearData <- function(yeardata, 
                             byday, 
                             select.years) {
   
-  dplyr::arrange(merge(by.day, dplyr::filter(df, year==this.year), by="monthday"), date)
+  arrange(merge(by.day, filter(df, year==this.year), by="monthday"), date)
   
 }
 
@@ -30,17 +58,18 @@ selectAndMergeYearData <- function(yeardata,
 #'
 #' Create a data frame with max/min temp, precip, windspeed, gdd, etc....
 #' 
-#' @export
 #' @param df a data frame of climate data spanning multiple years.
 #' @return a data frame containing growing degree days.
+#' @importFrom dplyr filter group_by summarize ungroup
+#' @export
 createDailyData <- function(df) {
   
   #monthday variable for grouping
   df$monthday = format(df$date, "%m-%d")
  
   # day dimension
-  df.by_day = dplyr::group_by(df, monthday)
-  by.day = dplyr::summarize(df.by_day, 
+  df.by_day = group_by(df, monthday)
+  by.day = summarize(df.by_day, 
                      temp.max=max(temp.high),
                      temp.avg=mean((temp.high+temp.low)/2),
                      temp.min=min(temp.low),
@@ -60,7 +89,7 @@ createDailyData <- function(df) {
                      gdd.sd = sd(gdd))
   
   #merge to this year's data by day number
-  dplyr::ungroup(by.day)
+  ungroup(by.day)
 }
 
 
@@ -84,6 +113,7 @@ createDailyData <- function(df) {
 #' @param year.start the first year of data to include
 #' @param year.end the last year of data to include
 #' @return data frame of data for graphic 
+#' @export
 getData <- function(year.start, year.end) {
   
 }
@@ -92,7 +122,6 @@ getData <- function(year.start, year.end) {
 #' 
 #' Loads climate data for a specific latitude/longitude pair.
 #' 
-#' @export
 #' @param lat a latitude
 #' @param lng a longitude
 #' @param data.dir a directory location, default "data/historical/"
@@ -101,6 +130,7 @@ getData <- function(year.start, year.end) {
 #'   c("precipitation", "temp.max", "temp.min", "windspeed")
 #' @param column.factors a vector of values to multiply by
 #' @return a data frame of climate data
+#' @export
 readClimateData <- function(lat, 
                              lng, 
                              data.dir="data/historical/", 
@@ -158,13 +188,13 @@ writeClimateData <- function(df,
 #'
 #' Reads binary climate data as a single vector.
 #'  
-#' @export
 #' @param fname the name of the file to be read
 #' @param what the data type to read as, default integer
 #' @param size the byte size, default 2
 #' @param encoding the binary encoding, default ASCII
 #' @param n the number of entries, default 134412 (92 years) 
 #' @return vector with read values
+#' @export
 readBinaryData <- function(file.name, 
                            what="integer", 
                            size=2, 
@@ -205,7 +235,6 @@ writeBinaryData <- function(df,
 #' in order to return a data frame with all necessary components
 #' for easy plotting.
 #' 
-#' @export
 #' @param lat the latitude of a location
 #' @param lng the longitude of a location
 #' @param mode one of 'historical', 'future', or 'present'. 
@@ -215,6 +244,7 @@ writeBinaryData <- function(df,
 #'   and 'present' directories.
 #' @param ... other parameters passed to loadClimateData()
 #' @return a data frame of climate data with dates attached.
+#' @export
 getLocationData <- function(lat, 
                             lng, 
                             mode,
